@@ -33,29 +33,16 @@ falsification test → promotion condition**.
   - unresolved-proof and changed-pin mutants killed 2/2;
   - isolated post-merge main CI green.
 
-## Active v0.5 — issue #7
-
-- New isolated `self-model-track/` research boundary.
-- General pseudometric spaces; discrete-time dynamics.
-- Explicit `ContractiveDynamics` hypothesis with Lipschitz factor `L < 1`.
-- Explicit `BoundaryModel` hypothesis with Lipschitz constant `K`.
-- Quantitative drift envelope:
-  `K * dist(x₀, f x₀) * L^n`.
-- Main research obligations:
-  - geometric world-step bound;
-  - geometric boundary/self-model drift bound;
-  - quantitative persistence predicate;
-  - envelope tends to zero;
-  - actual tracking drift tends to zero.
-- Counterexamples:
-  - expanding dynamics admit no factor below one;
-  - contractive half-dynamics with inverse observation violate boundary regularity
-    and show increasing observed drift.
-- Hostile controls remove contractivity and boundary Lipschitz continuity.
-
-Issue #7 closes only after the 9-theorem research build, axiom audit, 2/2
-mutation controls, root 124-theorem workflow, and post-merge verification all
-pass.
+- #7 — quantitative self-model persistence research track. **Completed** in
+  v0.5 at `5b7e43fafc2cdd823071c46ffd407256129bdb11`:
+  - separate `self-model-track/` trust boundary;
+  - general pseudometric spaces and discrete-time dynamics;
+  - 9 kernel-checked research theorem declarations;
+  - explicit contractivity and boundary-Lipschitz hypotheses;
+  - geometric drift bound and asymptotic drift-to-zero theorem;
+  - expanding-dynamics and inverse-boundary counterexamples;
+  - contractivity-removal and boundary-continuity-removal mutants killed 2/2;
+  - root 124-theorem workflow and research workflow both green post-merge.
 
 ## Deliberately withheld
 

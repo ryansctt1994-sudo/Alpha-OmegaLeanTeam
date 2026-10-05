@@ -279,3 +279,57 @@ reuse in the pinned environment, not an independent derivation of the
 mathematics.
 
 The root Lean 4.22.0 corpus remains exactly 124 theorem declarations.
+
+
+## v0.5 quantitative self-model persistence research track
+
+Canonical implementation commit:
+`5b7e43fafc2cdd823071c46ffd407256129bdb11`
+
+Directory: `self-model-track/`
+
+Before implementation, connected GitHub repositories were searched for prior
+Lean sources named or matching `PersistentSelfModel`, `BoundaryGeometry`,
+`QuantitativePersistence`, `IdentityThroughChange`, contractive tracking,
+and boundary continuity. No pinned prior Lean source implementing those named
+objects was recovered from the indexed repositories. This track is therefore a
+new formalization of the continuity sketch, not an imported theorem corpus.
+
+Pinned environment:
+- Lean: `leanprover/lean4:v4.31.0-rc1`
+- Lean Linux release SHA-256:
+  `055f1780f20f9774bbe270d5d4cf7561fb26ee6734c0917ba6cfb867e33cb99e`
+- Mathlib:
+  `d568c8c09630de097a046763c17b9ea99f95f950`
+
+The research track contains 9 theorem declarations. It formalizes:
+- contractive discrete-time world dynamics over general pseudometric spaces;
+- a Lipschitz boundary/model map;
+- geometric decay of successive world-step distance;
+- the observed drift bound
+  `K * dist(x₀, f x₀) * L^n`;
+- a quantitative persistence predicate;
+- convergence of both the geometric envelope and actual tracking drift to zero.
+
+Counterexamples:
+- `expandingWorld x = 2x` admits no global Lipschitz factor below one;
+- `halfWorld x = x/2` is contractive, while inverse observation
+  `x ↦ x⁻¹` is not 1-Lipschitz and produces increasing observed drift on the
+  explicit first two steps.
+
+Hostile controls remove:
+1. the `factor < 1` contractivity hypothesis;
+2. the boundary-model Lipschitz proof.
+
+Both mutants fail the research build.
+
+Two draft CI runs failed before promotion because of pinned-environment notation
+and topology-scope issues. Those failures were repaired without weakening any
+hypothesis or conclusion. The final PR and post-merge `main` runs passed.
+
+This track does not establish consciousness, personhood, subjective identity,
+persistence of a deployed AI system, correctness of a learned representation,
+runtime refinement, or operational authority.
+
+The root Lean 4.22.0 governance corpus remains exactly 124 theorem declarations.
+The v0.4 isolated Mathlib track remains exactly one theorem declaration.
