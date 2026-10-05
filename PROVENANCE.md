@@ -173,3 +173,33 @@ Natural-number coordinates are an abstract order model only.
 six to fail Lean: identity rewrite, unconsumed recovery, fabricated PASS,
 same-ID replacement, missing resolution basis, and evidence-driven authority
 growth.
+
+
+## v0.2+ LatticeCore integration
+
+Canonical commit: `bae0bb53ab33ba8d4bb4d84a85ce5cff30b676b6`
+
+`AlphaOmega/PortfolioLattice.lean` connects the previously separate
+Evidence × Authority state to the imported Weaver Lattice Core.
+
+The integration adds 18 theorem declarations covering:
+
+- a `LatticeCore.MeetOrder` instance for `EvidenceAuthority.Level`;
+- portfolio caps defined by the generic `LatticeCore.restrict` operator;
+- cap deflationarity, monotonicity, and idempotence;
+- monotonicity of portfolio caps in their constraint parameters;
+- meet-based demotion and preservation of a lower authority tier when that tier
+  is supported by both the current state and the demotion ceiling;
+- proof-carrying promotion requiring minimum evidence, verified witness, green
+  checks, and a separate authority grant;
+- governed promotion that composes promotion with the portfolio cap and cannot
+  exceed either the evidence or authority ceiling.
+
+The semantic mutation suite now contains eight controls. The two v0.2+ additions
+remove the portfolio cap from governed promotion and remove the separate
+authority-grant requirement. Both mutants are required to fail Lean.
+
+This does not turn evidence into authority. Authority increase remains an
+explicit, separately witnessed premise of the formal promotion relation. The
+model does not itself grant operational authority or establish runtime
+refinement.
