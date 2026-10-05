@@ -5,8 +5,8 @@ pieces of the project portfolio.
 
 ## Current canonical baseline
 
-`main` is **Alpha-Omega v0.3**, implementation commit
-`396706c7f9ab24bf3cca1505e018664cc093fd53`.
+`main` is **Alpha-Omega v0.4**, implementation commit
+`58c51f3cfaf02933bd0c26f98655a7a9dd04866e`.
 
 The canonical corpus contains **124 theorem declarations**:
 
@@ -21,7 +21,30 @@ The canonical corpus contains **124 theorem declarations**:
 
 The root project is pinned to **Lean 4.22.0**.
 
-v0.3 requires **11/11 targeted semantic mutations** to fail Lean. The three history controls remove ancestry linkage, prepend/reorder instead of append, and mutate the protected head on rejection.
+The root governance corpus remains at **124 theorem declarations** on Lean 4.22.0 and requires **11/11 targeted semantic mutations** to fail. v0.4 adds a separately verified Mathlib track with **1 theorem declaration** and **2/2 isolated mutations killed**.
+
+## Isolated Mathlib track
+
+`mathlib-track/` is a separate trust boundary, not an extension of the root
+124-theorem inventory.
+
+It pins:
+
+- Lean `v4.31.0-rc1`;
+- Lean Linux release SHA-256
+  `055f1780f20f9774bbe270d5d4cf7561fb26ee6734c0917ba6cfb867e33cb99e`;
+- Mathlib
+  `d568c8c09630de097a046763c17b9ea99f95f950`;
+- upstream theorem source
+  `Math_Build1994@41d2c9ae8a362a79de4f95733adf0fd8b53a151c`.
+
+The track currently contains exactly one theorem:
+
+`MathBuild.sqrt2_irrational_real : Irrational (Real.sqrt 2)`
+
+It is checked by the separate **Isolated Mathlib track** workflow. A failure in
+that workflow does not change the root theorem count or root Lean 4.22.0
+verification result.
 
 ## What “proved” means here
 
@@ -54,6 +77,8 @@ lake env lean -DwarningAsError=true Audit.lean
   bounded state-transition theorems.
 - `Audit.lean` — explicit theorem axiom inventory.
 - `PROVENANCE.md` — exact source origins, exclusions, and claim ceilings.
+- `mathlib-track/` — isolated newer Lean/Mathlib theorem track with its own
+  pins, audit, provenance, and mutations.
 - `FORMALIZATION_BACKLOG.md` — issue-backed next proof obligations.
 
 ## Portfolio posture
