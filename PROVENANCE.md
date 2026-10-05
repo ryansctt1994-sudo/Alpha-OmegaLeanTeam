@@ -86,10 +86,18 @@ toolchains into the 4.22.0 root project.
 
 ### lean-workers-union
 
-The current `transition_keeps_identity` theorem concludes
-`m.identity.member_id = m.identity.member_id`. That is reflexive and does not
-establish a nontrivial relation between pre- and post-transition states. It is
-therefore not counted as a canonical governance invariant here.
+Source repository: `ryansctt1994-sudo/lean-workers-union`  
+Repaired source commit: `e537c7104cf4601fe26eca2531baea9be07faf22`
+
+The earlier `transition_keeps_identity` theorem was reflexive. The source repo
+has now been repaired with an explicit pre/post transition constructor and
+relation, plus proofs of complete identity, member-id, and credit preservation.
+Lean 4.22.0 is pinned there, its theorem axiom inventory is checked, and an
+identity-rewrite mutation is required to fail.
+
+Alpha-Omega's `AlphaOmega/UnionTransition.lean` is a separately checked
+canonical model with the same preservation intent. No runtime refinement claim
+is inferred from agreement between the two source models.
 
 ### AutoProof
 
@@ -122,19 +130,20 @@ A green build raises evidence for this source tree. It does not grant runtime or
 production authority.
 
 
-## v0.2 candidate formalizations
+## v0.2 canonical formalizations
 
 ### Union transition preservation
 
 Motivating source: `ryansctt1994-sudo/lean-workers-union`.
 
-The source repository's prior `transition_keeps_identity` theorem was
-reflexive. `AlphaOmega/UnionTransition.lean` introduces an explicit transition
-function and pre/post transition relation. Its preservation theorems therefore
-relate the constructed post-state to the actual pre-state.
+The source repository's prior reflexive theorem was replaced upstream at
+`e537c7104cf4601fe26eca2531baea9be07faf22`. In parallel,
+`AlphaOmega/UnionTransition.lean` provides the canonical transition function
+and pre/post transition relation. Its preservation theorems relate the
+constructed post-state to the actual pre-state.
 
-This is a corrected formal model in Alpha-Omega; it is not yet a refinement
-proof for an external union runtime.
+Both source trees are kernel checked. Agreement between them is still not a
+runtime-refinement proof for an external union implementation.
 
 ### Weaver recovery/replacement semantics
 

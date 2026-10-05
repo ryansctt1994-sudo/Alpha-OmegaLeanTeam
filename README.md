@@ -5,23 +5,23 @@ pieces of the project portfolio.
 
 ## Current canonical baseline
 
-`main` v0.1 contains **66 theorem declarations** and is green under Lean 4.22.0.
+`main` is **Alpha-Omega v0.2**, commit
+`4ca4159afcef1caa0a90a622362d20354a994b4c`.
 
-## v0.2 candidate
+The canonical corpus contains **93 theorem declarations**:
 
-Branch `formal/v0.2-transition-recovery` raises the candidate corpus to
-**93 theorem declarations** by adding:
+- **31** imported IntrospectionTwin core theorems;
+- **16** imported Weaver Lattice Core theorems;
+- **19** v0.1 AlphaOmega separation/authority/recovery/protected-state theorems;
+- **6** nontrivial union-transition theorems over explicit pre/post states;
+- **13** Weaver recovery/replacement theorems;
+- **8** typed Evidence × Authority theorems.
 
-- **6 nontrivial union-transition theorems** over explicit pre/post member states;
-- **13 Weaver recovery/replacement theorems** covering consumed IDs,
-  indeterminate recovery, no automatic redispatch, exact replacement binding,
-  distinct replacement IDs, and reconciliation/duplicate-effect-waiver basis;
-- **8 typed Evidence × Authority theorems** covering product-order meet,
-  evidence growth without authority growth, and authority caps;
-- **6 targeted semantic mutation controls** that must all fail Lean after the
-  corresponding invariant is removed.
+The root project is pinned to **Lean 4.22.0**.
 
-The root project remains pinned to **Lean 4.22.0**.
+v0.2 also requires **6/6 targeted semantic mutations** to fail Lean:
+identity rewrite, unconsumed recovery, fabricated PASS, same-ID replacement,
+missing resolution basis, and evidence-driven authority growth.
 
 ## What “proved” means here
 
@@ -33,7 +33,8 @@ depends on them.
 
 That proves the Lean statements in this repository. It does **not** prove that a
 runtime implements those statements, that a receipt is authentic across a
-process boundary, or that evidence grants authority.
+process boundary, that recovery storage refines the model, or that evidence
+grants authority.
 
 ## Build
 
