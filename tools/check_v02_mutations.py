@@ -1,4 +1,4 @@
-"""Targeted semantic mutation checks for the v0.2 Lean modules."""
+"""Targeted semantic mutation checks for the v0.2+ Lean modules."""
 
 from __future__ import annotations
 
@@ -49,6 +49,18 @@ CASES = [
         ROOT / "AlphaOmega" / "EvidenceAuthority.lean",
         "  { s with evidence := Nat.max s.evidence newEvidence }",
         "  { evidence := Nat.max s.evidence newEvidence, authority := s.authority + 1 }",
+    ),
+    (
+        "governed-promotion-bypasses-cap",
+        ROOT / "AlphaOmega" / "PortfolioLattice.lean",
+        "  portfolioCap c (promote s p h)",
+        "  promote s p h",
+    ),
+    (
+        "promotion-drops-authority-grant",
+        ROOT / "AlphaOmega" / "PortfolioLattice.lean",
+        "  p.authorityGranted = true\n",
+        "  True\n",
     ),
 ]
 

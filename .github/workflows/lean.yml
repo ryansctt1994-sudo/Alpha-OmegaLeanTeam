@@ -48,8 +48,8 @@ jobs:
               if bad:
                   raise SystemExit(f"forbidden proof declaration in {path}: {bad.group(1)}")
 
-          if theorem_count != 93:
-              raise SystemExit(f"expected 93 theorem declarations, found {theorem_count}")
+          if theorem_count != 111:
+              raise SystemExit(f"expected 111 theorem declarations, found {theorem_count}")
 
           print(f"source guard PASS: {theorem_count} theorem declarations")
           PY
