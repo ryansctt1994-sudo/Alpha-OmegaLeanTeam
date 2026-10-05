@@ -18,18 +18,22 @@ boundary-Lipschitz hypotheses are not decorative.
 
 namespace SelfModelTrack
 
+open Filter
+
+noncomputable section
+
 variable {S M : Type*} [PseudoMetricSpace S] [PseudoMetricSpace M]
 
 structure ContractiveDynamics (S : Type*) [PseudoMetricSpace S] where
   step : S → S
-  factor : ℝ≥0
+  factor : NNReal
   lipschitz : LipschitzWith factor step
   factor_lt_one : factor < 1
 
 structure BoundaryModel (S M : Type*)
     [PseudoMetricSpace S] [PseudoMetricSpace M] where
   observe : S → M
-  constant : ℝ≥0
+  constant : NNReal
   lipschitz : LipschitzWith constant observe
 
 def worldAt (d : ContractiveDynamics S) (x₀ : S) (n : ℕ) : S :=
@@ -146,7 +150,7 @@ def expandingWorld (x : ℝ) : ℝ :=
   2 * x
 
 theorem expanding_world_not_contractive :
-    ¬ ∃ L : ℝ≥0, L < 1 ∧ LipschitzWith L expandingWorld := by
+    ¬ ∃ L : NNReal, L < 1 ∧ LipschitzWith L expandingWorld := by
   rintro ⟨L, hL, hLip⟩
   have h := hLip.dist_le_mul (1 : ℝ) (0 : ℝ)
   have hL' : (L : ℝ) < 1 := by
@@ -158,7 +162,7 @@ def halfWorld (x : ℝ) : ℝ :=
   (1 / 2 : ℝ) * x
 
 theorem half_world_lipschitz :
-    LipschitzWith (1 / 2 : ℝ≥0) halfWorld := by
+    LipschitzWith (1 / 2 : NNReal) halfWorld := by
   apply LipschitzWith.of_dist_le_mul
   intro x y
   rw [Real.dist_eq, Real.dist_eq]
@@ -171,7 +175,7 @@ theorem half_world_lipschitz :
 
 def halfDynamics : ContractiveDynamics ℝ where
   step := halfWorld
-  factor := (1 / 2 : ℝ≥0)
+  factor := (1 / 2 : NNReal)
   lipschitz := half_world_lipschitz
   factor_lt_one := by norm_num
 
