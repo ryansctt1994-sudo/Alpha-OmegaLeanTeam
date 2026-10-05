@@ -23,21 +23,15 @@ falsification test → promotion condition**.
 
 - #5 — AO-HISTORY-v1 tamper-evident history extension. **Completed** in v0.3 at `396706c7f9ab24bf3cca1505e018664cc093fd53`: frozen digest contract, 13 Lean theorems, 11/11 mutation controls, and post-merge main CI green.
 
-## Active v0.4 — issue #6
-
-- Isolated sibling Lake package under `mathlib-track/`.
-- Lean pin: `v4.31.0-rc1`.
-- Mathlib pin: `d568c8c09630de097a046763c17b9ea99f95f950`.
-- Upstream theorem source pinned to
-  `Math_Build1994@41d2c9ae8a362a79de4f95733adf0fd8b53a151c`.
-- The isolated track contains exactly one theorem declaration:
-  `MathBuild.sqrt2_irrational_real`.
-- Separate workflow owns Mathlib verification; the root Lean 4.22.0 canonical
-  workflow and 124-theorem inventory are unchanged.
-- Two hostile controls must fail: unresolved proof and changed Mathlib pin.
-
-Issue #6 closes only after the isolated workflow passes on PR and post-merge
-main while the canonical root workflow remains independently green.
+- #6 — isolated Mathlib theorem subproject. **Completed** in v0.4 at
+  `58c51f3cfaf02933bd0c26f98655a7a9dd04866e`:
+  - root Lean 4.22.0 / 124-theorem boundary unchanged and independently green;
+  - isolated Lean `v4.31.0-rc1` release checksum pinned;
+  - Mathlib commit `d568c8c09630de097a046763c17b9ea99f95f950` resolved exactly;
+  - upstream theorem source pinned to Math_Build1994 commit/blob;
+  - one isolated theorem declaration builds and passes axiom audit;
+  - unresolved-proof and changed-pin mutants killed 2/2;
+  - isolated post-merge main CI green.
 
 ## Next
 
