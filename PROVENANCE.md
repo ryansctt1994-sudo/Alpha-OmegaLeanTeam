@@ -1,5 +1,27 @@
 # Provenance and claim status
 
+## v0.6 named-step correspondence candidate
+
+`forward-simulation-track/` is an isolated Lean 4.22.0 candidate for #20,
+based on canonical main `01e3291f643b7742464fccbb798310a4513bd67c` and the
+unchanged frozen contract. Its `source-pins.json` binds the abstract sources,
+contract, and byte-identical Weaver runtime sources to Git blobs. Its
+`fixture-pins.json` binds replay certificates and snapshots to SHA-256 values.
+
+There are 12 new correspondence theorem declarations. Vendored History is the
+same dependency as the root's existing 13-theorem module and is not counted as
+new evidence. The root remains 124.
+
+The general theorem proves the encoded relation's forward match; finite
+kernel-checked replay links 43 observations to that encoding. The decoding,
+integrity, serialization, and strict-verifier observations are explicit
+parameters. Digest correspondence remains assumption D. This is not universal
+Python semantics or byte-parser verification. The isolated README identifies
+the remaining source-to-encoding obligation and exact excluded boundary.
+
+Root, Mathlib, and self-model checks remain separate. This candidate does not
+close #20, authorize operation, or assert an independent reproduction.
+
 This repository is a consolidation layer. Source provenance is preserved and
 claim strength is capped by what the checked Lean artifacts actually establish.
 

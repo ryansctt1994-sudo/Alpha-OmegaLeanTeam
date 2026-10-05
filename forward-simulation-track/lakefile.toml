@@ -1,0 +1,9 @@
+name = "aoHistoryForwardSimulation"
+version = "0.6.0"
+defaultTargets = ["ForwardSimulation"]
+
+[[lean_lib]]
+name = "ForwardSimulation"
+
+[[lean_lib]]
+name = "AlphaOmega"
