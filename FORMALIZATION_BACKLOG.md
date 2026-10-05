@@ -1,24 +1,20 @@
 # Formalization backlog
 
-This is the next-pass queue. Nothing below is counted as proved merely because
-it is listed here.
+Nothing is counted as proved merely because it is listed here. Canonical work is
+tracked by GitHub issues using **statement → assumptions → required artifact →
+falsification test → promotion condition**.
 
-## High priority
+## Active v0.2
 
-- Strengthen the lean-workers-union transition model so the post-state is an
-  explicit function/relation of the pre-state, then prove identity preservation
-  across that relation instead of proving reflexivity.
-- Formalize the Weaver recovery replacement-request rule: an indeterminate
-  original request remains consumed, and a replacement requires an explicit
-  reconciliation or duplicate-effect waiver.
-- Add a typed evidence/authority lattice whose meet and promotion rules encode
-  the portfolio claim ceiling directly.
-- Formalize hash-chain extension properties for observation history once a
-  digest primitive and serialization contract are fixed.
-- Add a separate Mathlib subproject for `MathBuild.sqrt2_irrational_real`
-  without changing the root Lean 4.22.0 trust boundary.
-- Translate the self-model persistence sketch into a nontrivial theorem over a
-  metric/order structure rather than a definitional restatement.
+- #2 — nontrivial union transition preservation.
+- #3 — Weaver recovery and replacement semantics.
+- #4 — typed Evidence × Authority lattice.
+
+## Next
+
+- #5 — tamper-evident history extension.
+- #6 — isolated Mathlib theorem subproject.
+- #7 — quantitative self-model persistence research track.
 
 ## Deliberately withheld
 

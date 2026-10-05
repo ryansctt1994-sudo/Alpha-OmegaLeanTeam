@@ -72,3 +72,33 @@ import IntrospectionTwin
 #print axioms IntrospectionTwin.Twin.step_gas_monotone
 #print axioms IntrospectionTwin.Twin.step_gas_strict
 #print axioms IntrospectionTwin.Twin.step_within_budget
+
+#print axioms AlphaOmega.UnionTransition.apply_preserves_identity
+#print axioms AlphaOmega.UnionTransition.apply_preserves_member_id
+#print axioms AlphaOmega.UnionTransition.apply_preserves_credit
+#print axioms AlphaOmega.UnionTransition.legal_transition_preserves_identity
+#print axioms AlphaOmega.UnionTransition.legal_transition_preserves_member_id
+#print axioms AlphaOmega.UnionTransition.legal_transition_preserves_credit
+
+#print axioms AlphaOmega.RecoveryReplacement.recover_unclosed_consumes_id
+#print axioms AlphaOmega.RecoveryReplacement.recover_unclosed_is_indeterminate
+#print axioms AlphaOmega.RecoveryReplacement.recover_unclosed_preserves_request_id
+#print axioms AlphaOmega.RecoveryReplacement.recover_unclosed_preserves_operation_key
+#print axioms AlphaOmega.RecoveryReplacement.recovered_never_auto_redispatches
+#print axioms AlphaOmega.RecoveryReplacement.replacement_requires_consumed_original
+#print axioms AlphaOmega.RecoveryReplacement.replacement_requires_indeterminate_original
+#print axioms AlphaOmega.RecoveryReplacement.replacement_requires_authorization
+#print axioms AlphaOmega.RecoveryReplacement.replacement_requires_binding
+#print axioms AlphaOmega.RecoveryReplacement.replacement_requires_distinct_id
+#print axioms AlphaOmega.RecoveryReplacement.replacement_requires_resolution_basis
+#print axioms AlphaOmega.RecoveryReplacement.authority_only_not_sufficient
+#print axioms AlphaOmega.RecoveryReplacement.replacement_keeps_original_nonredispatchable
+
+#print axioms AlphaOmega.EvidenceAuthority.le_refl
+#print axioms AlphaOmega.EvidenceAuthority.le_trans
+#print axioms AlphaOmega.EvidenceAuthority.meet_le_left
+#print axioms AlphaOmega.EvidenceAuthority.meet_le_right
+#print axioms AlphaOmega.EvidenceAuthority.le_meet
+#print axioms AlphaOmega.EvidenceAuthority.addEvidence_preserves_authority
+#print axioms AlphaOmega.EvidenceAuthority.addEvidence_never_decreases_evidence
+#print axioms AlphaOmega.EvidenceAuthority.capAuthority_never_raises

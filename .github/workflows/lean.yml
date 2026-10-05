@@ -48,8 +48,8 @@ jobs:
               if bad:
                   raise SystemExit(f"forbidden proof declaration in {path}: {bad.group(1)}")
 
-          if theorem_count != 66:
-              raise SystemExit(f"expected 66 theorem declarations, found {theorem_count}")
+          if theorem_count != 93:
+              raise SystemExit(f"expected 93 theorem declarations, found {theorem_count}")
 
           print(f"source guard PASS: {theorem_count} theorem declarations")
           PY
@@ -67,6 +67,12 @@ jobs:
             echo "warnings are release-blocking"
             exit 1
           fi
+
+      - name: Kill v0.2 semantic mutations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/check_v02_mutations.py
 
       - name: Audit theorem axioms
         shell: bash

@@ -120,3 +120,47 @@ A theorem enters the canonical corpus only when all of the following hold:
 
 A green build raises evidence for this source tree. It does not grant runtime or
 production authority.
+
+
+## v0.2 candidate formalizations
+
+### Union transition preservation
+
+Motivating source: `ryansctt1994-sudo/lean-workers-union`.
+
+The source repository's prior `transition_keeps_identity` theorem was
+reflexive. `AlphaOmega/UnionTransition.lean` introduces an explicit transition
+function and pre/post transition relation. Its preservation theorems therefore
+relate the constructed post-state to the actual pre-state.
+
+This is a corrected formal model in Alpha-Omega; it is not yet a refinement
+proof for an external union runtime.
+
+### Weaver recovery/replacement semantics
+
+Motivating source: Weaver OS recovery specification, PR #66 source head
+`b162a7cea43959214bd9e928ea6c9965976cdcc2`.
+
+`AlphaOmega/RecoveryReplacement.lean` formalizes the narrow rules that an
+unclosed request becomes consumed and indeterminate, the original ID is not
+automatically redispatchable, and a replacement requires explicit binding,
+a distinct request ID, authorization, and a reconciliation or
+duplicate-effect-waiver basis.
+
+The model does not prove durable-storage refinement, cryptographic verification,
+or physical exactly-once effects.
+
+### Evidence × Authority
+
+`AlphaOmega/EvidenceAuthority.lean` makes evidence and authority separate
+ordered coordinates. Evidence accumulation preserves authority; meet/cap
+operations cannot silently raise authority.
+
+Natural-number coordinates are an abstract order model only.
+
+### v0.2 sensitivity controls
+
+`tools/check_v02_mutations.py` creates six semantic mutants and requires all
+six to fail Lean: identity rewrite, unconsumed recovery, fabricated PASS,
+same-ID replacement, missing resolution basis, and evidence-driven authority
+growth.
