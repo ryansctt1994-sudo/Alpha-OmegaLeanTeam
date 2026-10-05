@@ -102,3 +102,22 @@ import IntrospectionTwin
 #print axioms AlphaOmega.EvidenceAuthority.addEvidence_preserves_authority
 #print axioms AlphaOmega.EvidenceAuthority.addEvidence_never_decreases_evidence
 #print axioms AlphaOmega.EvidenceAuthority.capAuthority_never_raises
+
+#print axioms AlphaOmega.PortfolioLattice.portfolioCap_deflationary
+#print axioms AlphaOmega.PortfolioLattice.portfolioCap_monotone
+#print axioms AlphaOmega.PortfolioLattice.portfolioCap_idempotent
+#print axioms AlphaOmega.PortfolioLattice.portfolioCap_monotone_in_constraints
+#print axioms AlphaOmega.PortfolioLattice.demotion_deflationary
+#print axioms AlphaOmega.PortfolioLattice.demotion_monotone
+#print axioms AlphaOmega.PortfolioLattice.demotion_idempotent
+#print axioms AlphaOmega.PortfolioLattice.demotion_preserves_shared_lower_tier
+#print axioms AlphaOmega.PortfolioLattice.promotion_preserves_evidence
+#print axioms AlphaOmega.PortfolioLattice.promotion_never_decreases_authority
+#print axioms AlphaOmega.PortfolioLattice.promotion_requires_minimum_evidence
+#print axioms AlphaOmega.PortfolioLattice.promotion_requires_verified_witness
+#print axioms AlphaOmega.PortfolioLattice.promotion_requires_green_checks
+#print axioms AlphaOmega.PortfolioLattice.promotion_requires_authority_grant
+#print axioms AlphaOmega.PortfolioLattice.no_grant_blocks_promotion
+#print axioms AlphaOmega.PortfolioLattice.governed_promotion_is_capped
+#print axioms AlphaOmega.PortfolioLattice.governed_promotion_respects_evidence_cap
+#print axioms AlphaOmega.PortfolioLattice.governed_promotion_respects_authority_cap
