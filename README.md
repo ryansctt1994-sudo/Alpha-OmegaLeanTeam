@@ -5,23 +5,25 @@ pieces of the project portfolio.
 
 ## Current canonical baseline
 
-`main` is **Alpha-Omega v0.2**, commit
-`4ca4159afcef1caa0a90a622362d20354a994b4c`.
+`main` is **Alpha-Omega v0.2+**, commit
+`bae0bb53ab33ba8d4bb4d84a85ce5cff30b676b6`.
 
-The canonical corpus contains **93 theorem declarations**:
+The canonical corpus contains **111 theorem declarations**:
 
 - **31** imported IntrospectionTwin core theorems;
 - **16** imported Weaver Lattice Core theorems;
 - **19** v0.1 AlphaOmega separation/authority/recovery/protected-state theorems;
 - **6** nontrivial union-transition theorems over explicit pre/post states;
 - **13** Weaver recovery/replacement theorems;
-- **8** typed Evidence × Authority theorems.
+- **8** typed Evidence × Authority foundation theorems;
+- **18** Evidence × Authority ↔ LatticeCore integration, promotion, cap, and demotion theorems.
 
 The root project is pinned to **Lean 4.22.0**.
 
-v0.2 also requires **6/6 targeted semantic mutations** to fail Lean:
+v0.2+ requires **8/8 targeted semantic mutations** to fail Lean:
 identity rewrite, unconsumed recovery, fabricated PASS, same-ID replacement,
-missing resolution basis, and evidence-driven authority growth.
+missing resolution basis, evidence-driven authority growth, governed-promotion
+cap bypass, and removal of the separate authority-grant requirement.
 
 ## What “proved” means here
 
