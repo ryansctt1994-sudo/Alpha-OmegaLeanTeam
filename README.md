@@ -3,18 +3,25 @@
 Canonical Lean build and theorem registry for the strongest formally checked
 pieces of the project portfolio.
 
-## Current canonical candidate
+## Current canonical baseline
 
-The review branch currently contains **66 theorem declarations**:
+`main` v0.1 contains **66 theorem declarations** and is green under Lean 4.22.0.
 
-- **31** imported IntrospectionTwin core theorems at source commit
-  `fcc63c085497a26bf1468294a3df53fdd6a56c9f`;
-- **16** imported Weaver Lattice Core theorems from PR #66 source head
-  `b162a7cea43959214bd9e928ea6c9965976cdcc2`;
-- **19** new AlphaOmega separation, authority, claim-ceiling, recovery, and
-  protected-state theorems.
+## v0.2 candidate
 
-The root project is pinned to **Lean 4.22.0**.
+Branch `formal/v0.2-transition-recovery` raises the candidate corpus to
+**93 theorem declarations** by adding:
+
+- **6 nontrivial union-transition theorems** over explicit pre/post member states;
+- **13 Weaver recovery/replacement theorems** covering consumed IDs,
+  indeterminate recovery, no automatic redispatch, exact replacement binding,
+  distinct replacement IDs, and reconciliation/duplicate-effect-waiver basis;
+- **8 typed Evidence × Authority theorems** covering product-order meet,
+  evidence growth without authority growth, and authority caps;
+- **6 targeted semantic mutation controls** that must all fail Lean after the
+  corresponding invariant is removed.
+
+The root project remains pinned to **Lean 4.22.0**.
 
 ## What “proved” means here
 
@@ -32,19 +39,21 @@ process boundary, or that evidence grants authority.
 
 ```bash
 lake build
+python3 tools/check_v02_mutations.py
 lake env lean -DwarningAsError=true Audit.lean
 ```
 
 ## Corpus
 
-- `AlphaOmega/` — portfolio-wide separation and fail-closed invariants.
+- `AlphaOmega/` — portfolio-wide separation, transition, recovery, and
+  evidence/authority invariants.
 - `LatticeCore/` — generic order/meet, attenuation, accumulation, and
   counterexample theorems.
 - `IntrospectionTwin/` — receipt promotion, gate soundness, admission, and
   bounded state-transition theorems.
 - `Audit.lean` — explicit theorem axiom inventory.
-- `PROVENANCE.md` — exact source commits, exclusions, and claim ceilings.
-- `FORMALIZATION_BACKLOG.md` — next proof obligations.
+- `PROVENANCE.md` — exact source origins, exclusions, and claim ceilings.
+- `FORMALIZATION_BACKLOG.md` — issue-backed next proof obligations.
 
 ## Portfolio posture
 
