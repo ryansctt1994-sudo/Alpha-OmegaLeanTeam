@@ -53,26 +53,24 @@ falsification test → promotion condition**.
 - Production authority.
 
 
-## Active v0.6 contract freeze — issue #18
+## v0.6 refinement program
 
-No correspondence proof code is permitted before the contract freeze merges.
+- #18 — AO-HISTORY runtime forward-simulation contract freeze. **Completed** at
+  `e7fb0be1713ce6cba94166e2234ebb8d16025081`.
+  - exact abstract and concrete artifacts pinned;
+  - `R_ok`, `alpha`, assumptions A–F, seven transition labels, stutter/reject
+    policy, excluded surface, two boundary witnesses, eight mutants, and the
+    exact permitted future claim sentence frozen;
+  - no correspondence proof was claimed by closing #18.
 
-Frozen candidate artifact:
-- `V0_6_FORWARD_SIMULATION_CONTRACT.md`
+- #20 — AO-HISTORY named-step forward simulation. **Active**.
+  - implement the frozen abstraction and labeled step relation;
+  - prove append/reject/stutter correspondence for the seven encoded labels;
+  - replay against the real pinned Weaver verifier/runtime;
+  - demonstrate EX-1/EX-2;
+  - kill MU-1 through MU-7 and fail MU-8 at the source-binding gate;
+  - keep the root Lean 4.22.0 / 124-theorem governance boundary independently
+    green.
 
-The contract names:
-- exact AO-HISTORY-v1 abstract commit/blobs;
-- exact Weaver Triad concrete commit/blobs;
-- `R_ok` and the narrower strict-verifier replay surface;
-- `alpha : R_ok -> AlphaOmega.History.History`;
-- exact concrete-to-abstract event-field mapping;
-- assumptions A–F;
-- seven encoded concrete transition labels;
-- append / reject / stutter correspondence shapes;
-- strict real-verifier replay requirement;
-- crash/torn-write and unsigned-append boundary witnesses;
-- eight hostile mutation targets;
-- exact permitted claim sentence.
-
-Closing #18 freezes only the statement. It does **not** establish runtime
-forward simulation or move the current v0.5 claim ceiling.
+The current claim ceiling remains v0.5 until #20 satisfies the frozen v0.6
+promotion gate.
