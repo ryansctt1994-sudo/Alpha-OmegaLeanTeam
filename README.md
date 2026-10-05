@@ -69,6 +69,17 @@ counterexamples and two hostile hypothesis-removal mutations are included.
 The interpretation is mathematical only: no consciousness, personhood,
 subjective identity, or deployed-system persistence claim is inferred.
 
+## v0.6 correspondence candidate
+
+`forward-simulation-track/` implements issue #20 against the frozen
+`V0_6_FORWARD_SIMULATION_CONTRACT.md`. It keeps 12 new theorem declarations in
+an isolated Lean 4.22.0 boundary, with source-bound replay certificates for 43
+runtime transitions, EX-1/EX-2, and required MU-1..MU-8 controls.
+
+See `V0_6_STATUS.md` and the isolated README for its encoding assumptions,
+runtime replay scope, and promotion gate. This candidate does not change the
+root's 124-theorem count or make a universal Python refinement claim.
+
 ## What “proved” means here
 
 A theorem is canonical only after this repository's clean CI compiles the pinned

@@ -1,0 +1,43 @@
+name: AO-HISTORY named-step forward simulation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  forward-simulation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: forward-simulation-track
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Acquire pinned Lean 4.22.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -o "$RUNNER_TEMP/lean.tar.zst" \
+            https://github.com/leanprover/lean4/releases/download/v4.22.0/lean-4.22.0-linux.tar.zst
+          echo "85097a4d659fe388193a5efb0c413b880e101f1290cc41d00eb60847b18f064e  $RUNNER_TEMP/lean.tar.zst" | sha256sum -c -
+          tar --no-same-owner --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/lean-4.22.0-linux/bin" >> "$GITHUB_PATH"
+      - name: Install pinned direct replay dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Source-bound proof, replay, mutations, and axiom gate
+        run: python validate.py
+      - name: Retain source-bound evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ao-history-forward-simulation-evidence
+          path: forward-simulation-track/generated/
+          if-no-files-found: error
+          retention-days: 90

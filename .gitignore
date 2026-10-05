@@ -1,0 +1,7 @@
+.lake/
+**/.lake/
+**/__pycache__/
+**/.pytest_cache/
+forward-simulation-track/generated/
+*.log
+lake-manifest.json
