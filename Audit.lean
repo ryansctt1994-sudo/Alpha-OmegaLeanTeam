@@ -1,0 +1,74 @@
+import AlphaOmega
+import LatticeCore
+import IntrospectionTwin
+
+/-! Axiom inventory for the canonical theorem corpus. -/
+
+#print axioms AlphaOmega.capability_not_sufficient_for_authority
+#print axioms AlphaOmega.evidence_not_sufficient_for_authority
+#print axioms AlphaOmega.witness_not_sufficient_for_evidence
+#print axioms AlphaOmega.signature_not_sufficient_for_truth
+#print axioms AlphaOmega.signed_evidence_not_sufficient_for_authority
+#print axioms AlphaOmega.recordEvidence_preserves_authority
+#print axioms AlphaOmega.recordGreenCheck_preserves_authority
+#print axioms AlphaOmega.recordWitness_preserves_authority
+#print axioms AlphaOmega.evidence_growth_without_authority_growth
+#print axioms AlphaOmega.addEvidence_preserves_authority
+#print axioms AlphaOmega.capAuthority_never_raises
+#print axioms AlphaOmega.normalizeRecovery_idempotent
+#print axioms AlphaOmega.intent_normalizes_to_indeterminate
+#print axioms AlphaOmega.intent_does_not_normalize_to_pass
+#print axioms AlphaOmega.normalizeRecord_preserves_authority
+#print axioms AlphaOmega.reject_preserves_protected_state
+#print axioms AlphaOmega.reject_preserves_budget
+#print axioms AlphaOmega.failedCheck_preserves_protected_state
+#print axioms AlphaOmega.failedCheck_preserves_budget
+
+#print axioms LatticeCore.uneven_deflationary
+#print axioms LatticeCore.uneven_not_monotone
+#print axioms LatticeCore.decrement_deflationary
+#print axioms LatticeCore.decrement_monotone
+#print axioms LatticeCore.decrement_not_idempotent
+#print axioms LatticeCore.comp_deflationary
+#print axioms LatticeCore.comp_monotone
+#print axioms LatticeCore.comp_idempotent_of_commute
+#print axioms LatticeCore.restrict_deflationary
+#print axioms LatticeCore.restrict_monotone
+#print axioms LatticeCore.restrict_idempotent
+#print axioms LatticeCore.permission_attenuation
+#print axioms LatticeCore.assurance_weakest_link
+#print axioms LatticeCore.collect_inflationary
+#print axioms LatticeCore.collect_monotone
+#print axioms LatticeCore.collect_idempotent
+
+#print axioms IntrospectionTwin.ReplayWitness.clean_spec
+#print axioms IntrospectionTwin.promote_preserves_subject
+#print axioms IntrospectionTwin.promote_preserves_claim
+#print axioms IntrospectionTwin.promote_open_iff
+#print axioms IntrospectionTwin.promote_not_checked_without_witness
+#print axioms IntrospectionTwin.promoted_sorry_not_checked
+#print axioms IntrospectionTwin.promote_checked_cases
+#print axioms IntrospectionTwin.checked_has_clean_witness
+#print axioms IntrospectionTwin.evaluateGate_sound
+#print axioms IntrospectionTwin.gate_rejects_unverified
+#print axioms IntrospectionTwin.gate_rejects_no_witness
+#print axioms IntrospectionTwin.gate_requires_subject_match
+#print axioms IntrospectionTwin.gate_rejects_promoted_sorry
+#print axioms IntrospectionTwin.gate_rejects_disallowed_axiom
+#print axioms IntrospectionTwin.empty_rejects_constructive
+#print axioms IntrospectionTwin.constructive_covers_constructive
+#print axioms IntrospectionTwin.constructive_rejects_choice
+#print axioms IntrospectionTwin.classical_covers_classical
+#print axioms IntrospectionTwin.no_profile_allows_sorry
+#print axioms IntrospectionTwin.no_profile_allows_native_decide
+#print axioms IntrospectionTwin.admitCore_sound
+#print axioms IntrospectionTwin.Twin.step_ok_iff
+#print axioms IntrospectionTwin.Twin.step_safety_inversion
+#print axioms IntrospectionTwin.Twin.step_ok_shape
+#print axioms IntrospectionTwin.Twin.step_bounds_stable
+#print axioms IntrospectionTwin.Twin.step_monotonic_history
+#print axioms IntrospectionTwin.Twin.step_sequence_advances
+#print axioms IntrospectionTwin.Twin.step_gas_accounted
+#print axioms IntrospectionTwin.Twin.step_gas_monotone
+#print axioms IntrospectionTwin.Twin.step_gas_strict
+#print axioms IntrospectionTwin.Twin.step_within_budget
