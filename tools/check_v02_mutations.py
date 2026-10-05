@@ -1,4 +1,4 @@
-"""Targeted semantic mutation checks for the v0.2+ Lean modules."""
+"""Targeted semantic mutation checks for the v0.3 Lean modules."""
 
 from __future__ import annotations
 
@@ -61,6 +61,24 @@ CASES = [
         ROOT / "AlphaOmega" / "PortfolioLattice.lean",
         "  p.authorityGranted = true\n",
         "  True\n",
+    ),
+    (
+        "history-drops-prev-link",
+        ROOT / "AlphaOmega" / "History.lean",
+        "  HashValid hash e ∧ LinkValid h e ∧ IndexValid h e",
+        "  HashValid hash e ∧ True ∧ IndexValid h e",
+    ),
+    (
+        "history-prepends-instead-of-appends",
+        ROOT / "AlphaOmega" / "History.lean",
+        "  { entries := h.entries ++ [e], head := e.eventDigest }",
+        "  { entries := [e] ++ h.entries, head := e.eventDigest }",
+    ),
+    (
+        "rejection-mutates-protected-head",
+        ROOT / "AlphaOmega" / "History.lean",
+        "def reject (h : History) (_e : Entry) : History :=\n  h",
+        "def reject (h : History) (e : Entry) : History :=\n  appendEntry h e",
     ),
 ]
 
