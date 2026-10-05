@@ -203,3 +203,33 @@ This does not turn evidence into authority. Authority increase remains an
 explicit, separately witnessed premise of the formal promotion relation. The
 model does not itself grant operational authority or establish runtime
 refinement.
+
+
+## v0.3 AO-HISTORY-v1
+
+Canonical implementation commit: `396706c7f9ab24bf3cca1505e018664cc093fd53`
+
+The digest/history contract is frozen in `HISTORY_CONTRACT_v1.md`, derived
+from Weaver_Os commit `ee725f7cf923d86d915900fc93ef2e3f6e5eef1c`.
+
+Normative source artifacts:
+- `triadic_controls/ledger.py` blob `a967376fd3b1c2170e5ee7b2659e15d851db884b`
+- `schemas/triad_event.schema.json` blob `93ce0918131167cb492592d5696d3e9fa4faf49f`
+- `tools/verify_triad_ledger.py` blob `e20322297af3c19e7ad3c5c1c32da3717cfea757`
+- `tests/test_triad_multiblock.py` blob `17b5caff6187d6346c1cc8071fe2f796df5f62d4`
+
+The frozen contract removes `event_hash` and `signature` before hashing,
+keeps `prev_hash` inside the digest input, uses compact sorted UTF-8 JSON with
+NaN/Infinity forbidden, and specifies SHA-256 lowercase hex plus genesis/index
+and previous-hash continuity.
+
+`AlphaOmega/History.lean` adds 13 structural theorems:
+- exact-prefix append-only extension;
+- history length non-decrease;
+- digest, previous-head, and index admission;
+- broken-ancestry, hash-mismatch, and wrong-index rejection;
+- rejection preserving the full protected history, entries, and head.
+
+The digest function is parametric in Lean. These theorems therefore do not
+claim SHA-256 collision resistance, Ed25519 authenticity, byte-level
+Python/Lean refinement, durable storage, distributed consensus, or authority.
