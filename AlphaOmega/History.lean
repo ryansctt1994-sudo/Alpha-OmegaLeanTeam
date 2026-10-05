@@ -83,9 +83,9 @@ theorem valid_extension_prefix
     (h : ValidExtension hash old new) :
     EntriesPrefix old new := by
   induction h with
-  | refl current =>
+  | refl =>
       exact ⟨[], by simp⟩
-  | @step origin current hprev e hadm ih =>
+  | step hprev e hadm ih =>
       rcases ih with ⟨suffix, hsuffix⟩
       refine ⟨suffix ++ [e], ?_⟩
       simp [appendEntry, hsuffix, List.append_assoc]
