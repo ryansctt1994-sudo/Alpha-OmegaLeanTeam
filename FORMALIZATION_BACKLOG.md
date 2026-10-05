@@ -51,3 +51,28 @@ falsification test → promotion condition**.
 - Cryptographic authenticity from hash equality alone.
 - Independent reproduction claims not backed by an independent run.
 - Production authority.
+
+
+## Active v0.6 contract freeze — issue #18
+
+No correspondence proof code is permitted before the contract freeze merges.
+
+Frozen candidate artifact:
+- `V0_6_FORWARD_SIMULATION_CONTRACT.md`
+
+The contract names:
+- exact AO-HISTORY-v1 abstract commit/blobs;
+- exact Weaver Triad concrete commit/blobs;
+- `R_ok` and the narrower strict-verifier replay surface;
+- `alpha : R_ok -> AlphaOmega.History.History`;
+- exact concrete-to-abstract event-field mapping;
+- assumptions A–F;
+- seven encoded concrete transition labels;
+- append / reject / stutter correspondence shapes;
+- strict real-verifier replay requirement;
+- crash/torn-write and unsigned-append boundary witnesses;
+- eight hostile mutation targets;
+- exact permitted claim sentence.
+
+Closing #18 freezes only the statement. It does **not** establish runtime
+forward simulation or move the current v0.5 claim ceiling.
