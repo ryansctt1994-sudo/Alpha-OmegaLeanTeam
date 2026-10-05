@@ -1,0 +1,93 @@
+name: Canonical Lean verification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lean:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Acquire pinned Lean 4.22.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3             -o "$RUNNER_TEMP/lean.tar.zst"             https://github.com/leanprover/lean4/releases/download/v4.22.0/lean-4.22.0-linux.tar.zst
+          echo "85097a4d659fe388193a5efb0c413b880e101f1290cc41d00eb60847b18f064e  $RUNNER_TEMP/lean.tar.zst"             | sha256sum -c -
+          tar --no-same-owner --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/lean-4.22.0-linux/bin" >> "$GITHUB_PATH"
+
+      - name: Guard proof sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          roots = [Path("AlphaOmega"), Path("LatticeCore"), Path("IntrospectionTwin")]
+          files = [Path("AlphaOmega.lean"), Path("LatticeCore.lean"), Path("IntrospectionTwin.lean")]
+          for root in roots:
+              files.extend(sorted(root.rglob("*.lean")))
+
+          theorem_re = re.compile(r"^\s*theorem\s+[A-Za-z0-9_'.]+", re.M)
+          forbidden_re = re.compile(r"^\s*(axiom|sorry|admit)(?:\s|$)", re.M)
+
+          theorem_count = 0
+          for path in files:
+              text = path.read_text()
+              theorem_count += len(theorem_re.findall(text))
+              bad = forbidden_re.search(text)
+              if bad:
+                  raise SystemExit(f"forbidden proof declaration in {path}: {bad.group(1)}")
+
+          if theorem_count != 66:
+              raise SystemExit(f"expected 66 theorem declarations, found {theorem_count}")
+
+          print(f"source guard PASS: {theorem_count} theorem declarations")
+          PY
+
+      - name: Build canonical libraries
+        shell: bash
+        run: |
+          set -euo pipefail
+          lean --version
+          lake --version
+          lake clean
+          set -o pipefail
+          lake build 2>&1 | tee build.log
+          if grep -Eqi '(^|[^A-Za-z])warning:' build.log; then
+            echo "warnings are release-blocking"
+            exit 1
+          fi
+
+      - name: Audit theorem axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean -DwarningAsError=true Audit.lean 2>&1 | tee axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          text = Path("axioms.log").read_text()
+          allowed = {"propext", "Quot.sound", "Classical.choice"}
+          used = set()
+          for group in re.findall(r"depends on axioms: \[([^\]]*)\]", text):
+              used.update(x.strip() for x in group.split(",") if x.strip())
+
+          unexpected = used - allowed
+          if unexpected:
+              raise SystemExit(f"unapproved axiom dependency: {sorted(unexpected)}")
+          if "sorryAx" in text or "Lean.ofReduceBool" in text:
+              raise SystemExit("forbidden trust dependency present in axiom audit")
+
+          print(f"axiom audit PASS: {sorted(used)}")
+          PY
