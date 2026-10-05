@@ -1,0 +1,129 @@
+name: Isolated Mathlib track
+
+on:
+  pull_request:
+    paths:
+      - "mathlib-track/**"
+      - ".github/workflows/mathlib-track.yml"
+  push:
+    branches: [main]
+    paths:
+      - "mathlib-track/**"
+      - ".github/workflows/mathlib-track.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mathlib-track:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard isolated source and pins
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          python3 tools/verify_pins.py .
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          files = sorted(Path("MathBuild").rglob("*.lean"))
+          theorem_re = re.compile(r"^\s*theorem\s+[A-Za-z0-9_'.]+", re.M)
+          forbidden_re = re.compile(r"^\s*(axiom|sorry|admit)(?:\s|$)", re.M)
+
+          theorem_count = 0
+          for path in files:
+              text = path.read_text()
+              theorem_count += len(theorem_re.findall(text))
+              bad = forbidden_re.search(text)
+              if bad:
+                  raise SystemExit(
+                      f"forbidden proof declaration in {path}: {bad.group(1)}"
+                  )
+
+          if theorem_count != 1:
+              raise SystemExit(
+                  f"expected exactly 1 isolated theorem declaration, found {theorem_count}"
+              )
+
+          print("isolated source guard PASS: 1 theorem declaration")
+          PY
+
+      - name: Acquire pinned Lean 4.31.0-rc1
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 \
+            -o "$RUNNER_TEMP/lean.tar.zst" \
+            https://github.com/leanprover/lean4/releases/download/v4.31.0-rc1/lean-4.31.0-rc1-linux.tar.zst
+          echo "055f1780f20f9774bbe270d5d4cf7561fb26ee6734c0917ba6cfb867e33cb99e  $RUNNER_TEMP/lean.tar.zst" | sha256sum -c -
+          tar --no-same-owner --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/lean-4.31.0-rc1-linux/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve exact Mathlib dependency
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          lean --version
+          lake --version
+          lake update
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = "d568c8c09630de097a046763c17b9ea99f95f950"
+          manifest = json.loads(Path("lake-manifest.json").read_text())
+          packages = manifest.get("packages", [])
+          mathlib = [p for p in packages if p.get("name") == "mathlib"]
+          if len(mathlib) != 1:
+              raise SystemExit(f"expected one mathlib manifest entry, found {len(mathlib)}")
+          rev = mathlib[0].get("rev")
+          if rev != expected:
+              raise SystemExit(f"resolved mathlib rev mismatch: {rev!r} != {expected!r}")
+          print(f"resolved Mathlib pin PASS: {rev}")
+          PY
+          lake exe cache get
+
+      - name: Build pinned Mathlib track
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          lake build MathBuild
+
+      - name: Audit isolated theorem axioms
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          lake env lean -DwarningAsError=true Audit.lean 2>&1 | tee axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          text = Path("axioms.log").read_text()
+          allowed = {"propext", "Quot.sound", "Classical.choice"}
+          used = set()
+          for group in re.findall(r"depends on axioms: \[([^\]]*)\]", text):
+              used.update(x.strip() for x in group.split(",") if x.strip())
+
+          unexpected = used - allowed
+          if unexpected:
+              raise SystemExit(f"unapproved axiom dependency: {sorted(unexpected)}")
+          if "sorryAx" in text or "Lean.ofReduceBool" in text:
+              raise SystemExit("forbidden trust dependency present in axiom audit")
+
+          print(f"isolated axiom audit PASS: {sorted(used)}")
+          PY
+
+      - name: Kill isolated-track mutations
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          python3 tools/check_mutations.py
