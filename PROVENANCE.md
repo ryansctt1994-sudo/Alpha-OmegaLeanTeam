@@ -79,10 +79,10 @@ Current source includes:
 
 `MathBuild.sqrt2_irrational_real : Irrational (Real.sqrt 2)`
 
-implemented by reusing Mathlib's maintained `irrational_sqrt_two`. The source
-project currently pins Lean `v4.31.0-rc1` and a specific Mathlib commit, so it
-is tracked as a valid external theorem candidate rather than silently mixing
-toolchains into the 4.22.0 root project.
+implemented by reusing Mathlib's maintained `irrational_sqrt_two`. It remains
+excluded from the root Lean 4.22.0 corpus, but v0.4 now reproduces it inside the
+separate `mathlib-track/` trust boundary with exact Lean, Mathlib, source,
+axiom-audit, and mutation gates.
 
 ### lean-workers-union
 
@@ -233,3 +233,49 @@ and previous-hash continuity.
 The digest function is parametric in Lean. These theorems therefore do not
 claim SHA-256 collision resistance, Ed25519 authenticity, byte-level
 Python/Lean refinement, durable storage, distributed consensus, or authority.
+
+
+## v0.4 isolated Mathlib track
+
+Canonical implementation commit:
+`58c51f3cfaf02933bd0c26f98655a7a9dd04866e`
+
+Directory: `mathlib-track/`
+
+Upstream source:
+- repository: `ryansctt1994-sudo/Math_Build1994`
+- commit: `41d2c9ae8a362a79de4f95733adf0fd8b53a151c`
+- theorem blob:
+  `d0e5e997327619231ed9a7039f6ca4295a7195a7`
+- upstream `lean-toolchain` blob:
+  `8c7e931aab0179018e3e987d8395daa4466fc3aa`
+- upstream `lakefile.lean` blob:
+  `14525ef831661111106b26e9ee869140819da87e`
+
+Pinned verification environment:
+- Lean: `leanprover/lean4:v4.31.0-rc1`
+- Lean Linux release SHA-256:
+  `055f1780f20f9774bbe270d5d4cf7561fb26ee6734c0917ba6cfb867e33cb99e`
+- Mathlib:
+  `d568c8c09630de097a046763c17b9ea99f95f950`
+
+The isolated workflow performs an exact textual pin guard, checksum-verifies the
+Lean release archive, runs `lake update`, checks the generated manifest resolves
+Mathlib to the required commit, builds the isolated library, audits theorem
+axioms, and requires two hostile controls to fail:
+
+1. replacing the theorem proof with an unresolved reference;
+2. changing the Mathlib commit pin.
+
+The first PR CI attempt failed because a helper action required a pre-existing
+Lake manifest. That failure did not affect the root governance workflow. The
+isolated workflow was then made self-contained and passed both on the PR and on
+post-merge `main`.
+
+The theorem
+`MathBuild.sqrt2_irrational_real : Irrational (Real.sqrt 2)`
+reuses Mathlib's maintained `irrational_sqrt_two`. It is kernel-checked proof
+reuse in the pinned environment, not an independent derivation of the
+mathematics.
+
+The root Lean 4.22.0 corpus remains exactly 124 theorem declarations.
