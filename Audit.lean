@@ -121,3 +121,17 @@ import IntrospectionTwin
 #print axioms AlphaOmega.PortfolioLattice.governed_promotion_is_capped
 #print axioms AlphaOmega.PortfolioLattice.governed_promotion_respects_evidence_cap
 #print axioms AlphaOmega.PortfolioLattice.governed_promotion_respects_authority_cap
+
+#print axioms AlphaOmega.History.append_entry_length
+#print axioms AlphaOmega.History.append_entries_prefix
+#print axioms AlphaOmega.History.valid_extension_prefix
+#print axioms AlphaOmega.History.valid_extension_length
+#print axioms AlphaOmega.History.admissible_hash_matches
+#print axioms AlphaOmega.History.admissible_prev_matches_head
+#print axioms AlphaOmega.History.admissible_index_matches_length
+#print axioms AlphaOmega.History.broken_ancestry_rejected
+#print axioms AlphaOmega.History.hash_mismatch_rejected
+#print axioms AlphaOmega.History.wrong_index_rejected
+#print axioms AlphaOmega.History.rejection_preserves_history
+#print axioms AlphaOmega.History.rejection_preserves_head
+#print axioms AlphaOmega.History.rejection_preserves_entries
