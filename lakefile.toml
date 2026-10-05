@@ -1,0 +1,12 @@
+name = "alphaOmegaLeanTeam"
+version = "0.1.0"
+defaultTargets = ["AlphaOmega", "LatticeCore", "IntrospectionTwin"]
+
+[[lean_lib]]
+name = "AlphaOmega"
+
+[[lean_lib]]
+name = "LatticeCore"
+
+[[lean_lib]]
+name = "IntrospectionTwin"
