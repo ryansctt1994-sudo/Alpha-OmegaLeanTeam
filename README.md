@@ -5,8 +5,8 @@ pieces of the project portfolio.
 
 ## Current canonical baseline
 
-`main` is **Alpha-Omega v0.4**, implementation commit
-`58c51f3cfaf02933bd0c26f98655a7a9dd04866e`.
+`main` is **Alpha-Omega v0.5**, implementation commit
+`5b7e43fafc2cdd823071c46ffd407256129bdb11`.
 
 The canonical corpus contains **124 theorem declarations**:
 
@@ -21,7 +21,7 @@ The canonical corpus contains **124 theorem declarations**:
 
 The root project is pinned to **Lean 4.22.0**.
 
-The root governance corpus remains at **124 theorem declarations** on Lean 4.22.0 and requires **11/11 targeted semantic mutations** to fail. v0.4 adds a separately verified Mathlib track with **1 theorem declaration** and **2/2 isolated mutations killed**.
+The root governance corpus remains at **124 theorem declarations** on Lean 4.22.0 and requires **11/11 targeted semantic mutations** to fail. v0.4 keeps a separately verified one-theorem Mathlib track with **2/2 isolated mutations killed**. v0.5 adds a third, separate self-model research boundary with **9 theorem declarations** and **2/2 research mutations killed**.
 
 ## Isolated Mathlib track
 
@@ -45,6 +45,29 @@ The track currently contains exactly one theorem:
 It is checked by the separate **Isolated Mathlib track** workflow. A failure in
 that workflow does not change the root theorem count or root Lean 4.22.0
 verification result.
+
+## Quantitative self-model research track
+
+`self-model-track/` is a third trust boundary. It does **not** increase the
+root 124-theorem count and does **not** change the v0.4 one-theorem Mathlib
+track.
+
+It proves, over general pseudometric spaces and discrete-time dynamics, that if:
+
+- world updates are Lipschitz with factor `L < 1`; and
+- the boundary/model map is Lipschitz with constant `K`;
+
+then successive observed self-model drift is bounded by:
+
+```text
+K * dist(x₀, f x₀) * L^n
+```
+
+The bound and the actual tracking drift both tend to zero. Two explicit
+counterexamples and two hostile hypothesis-removal mutations are included.
+
+The interpretation is mathematical only: no consciousness, personhood,
+subjective identity, or deployed-system persistence claim is inferred.
 
 ## What “proved” means here
 
@@ -79,6 +102,8 @@ lake env lean -DwarningAsError=true Audit.lean
 - `PROVENANCE.md` — exact source origins, exclusions, and claim ceilings.
 - `mathlib-track/` — isolated newer Lean/Mathlib theorem track with its own
   pins, audit, provenance, and mutations.
+- `self-model-track/` — isolated quantitative persistence research track with
+  its own pins, audit, counterexamples, and mutations.
 - `FORMALIZATION_BACKLOG.md` — issue-backed next proof obligations.
 
 ## Portfolio posture
