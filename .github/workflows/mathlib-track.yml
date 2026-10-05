@@ -53,14 +53,48 @@ jobs:
           print("isolated source guard PASS: 1 theorem declaration")
           PY
 
+      - name: Acquire pinned Lean 4.31.0-rc1
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 \
+            -o "$RUNNER_TEMP/lean.tar.zst" \
+            https://github.com/leanprover/lean4/releases/download/v4.31.0-rc1/lean-4.31.0-rc1-linux.tar.zst
+          echo "055f1780f20f9774bbe270d5d4cf7561fb26ee6734c0917ba6cfb867e33cb99e  $RUNNER_TEMP/lean.tar.zst" | sha256sum -c -
+          tar --no-same-owner --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/lean-4.31.0-rc1-linux/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve exact Mathlib dependency
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          lean --version
+          lake --version
+          lake update
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = "d568c8c09630de097a046763c17b9ea99f95f950"
+          manifest = json.loads(Path("lake-manifest.json").read_text())
+          packages = manifest.get("packages", [])
+          mathlib = [p for p in packages if p.get("name") == "mathlib"]
+          if len(mathlib) != 1:
+              raise SystemExit(f"expected one mathlib manifest entry, found {len(mathlib)}")
+          rev = mathlib[0].get("rev")
+          if rev != expected:
+              raise SystemExit(f"resolved mathlib rev mismatch: {rev!r} != {expected!r}")
+          print(f"resolved Mathlib pin PASS: {rev}")
+          PY
+          lake exe cache get
+
       - name: Build pinned Mathlib track
-        uses: leanprover/lean-action@v1
-        with:
-          lake-package-directory: mathlib-track
-          build: true
-          build-args: MathBuild
-          test: false
-          use-mathlib-cache: true
+        shell: bash
+        working-directory: mathlib-track
+        run: |
+          set -euo pipefail
+          lake build MathBuild
 
       - name: Audit isolated theorem axioms
         shell: bash
