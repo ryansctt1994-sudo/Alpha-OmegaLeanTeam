@@ -6,3 +6,5 @@ import AlphaOmega.ProtectedState
 import AlphaOmega.UnionTransition
 import AlphaOmega.RecoveryReplacement
 import AlphaOmega.EvidenceAuthority
+
+import AlphaOmega.PortfolioLattice
