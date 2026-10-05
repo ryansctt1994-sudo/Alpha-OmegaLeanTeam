@@ -30,6 +30,12 @@ with proof reuse through Mathlib's maintained `irrational_sqrt_two`.
 
 ## Isolation rule
 
+CI acquires the Lean 4.31.0-rc1 Linux release archive directly and verifies
+release SHA-256
+`055f1780f20f9774bbe270d5d4cf7561fb26ee6734c0917ba6cfb867e33cb99e`
+before extraction. `lake update` then resolves the exact Mathlib revision and
+the workflow checks the generated manifest contains the required commit.
+
 The root repository remains pinned to Lean 4.22.0 and its canonical theorem
 inventory remains 124 declarations.
 
