@@ -1,0 +1,11 @@
+import SelfModelTrack.Persistence
+
+#print axioms SelfModelTrack.world_step_geometric
+#print axioms SelfModelTrack.boundary_drift_geometric
+#print axioms SelfModelTrack.quantitative_persistence
+#print axioms SelfModelTrack.drift_bound_tendsto_zero
+#print axioms SelfModelTrack.tracking_drift_tendsto_zero
+#print axioms SelfModelTrack.expanding_world_not_contractive
+#print axioms SelfModelTrack.half_world_lipschitz
+#print axioms SelfModelTrack.inverse_boundary_not_one_lipschitz
+#print axioms SelfModelTrack.inverse_boundary_drift_grows
