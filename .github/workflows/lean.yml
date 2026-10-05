@@ -68,6 +68,12 @@ jobs:
             exit 1
           fi
 
+      - name: Kill v0.2 semantic mutations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/check_v02_mutations.py
+
       - name: Audit theorem axioms
         shell: bash
         run: |
