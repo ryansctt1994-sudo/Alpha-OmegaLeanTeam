@@ -5,10 +5,10 @@ pieces of the project portfolio.
 
 ## Current canonical baseline
 
-`main` is **Alpha-Omega v0.2+**, commit
-`bae0bb53ab33ba8d4bb4d84a85ce5cff30b676b6`.
+`main` is **Alpha-Omega v0.3**, implementation commit
+`396706c7f9ab24bf3cca1505e018664cc093fd53`.
 
-The canonical corpus contains **111 theorem declarations**:
+The canonical corpus contains **124 theorem declarations**:
 
 - **31** imported IntrospectionTwin core theorems;
 - **16** imported Weaver Lattice Core theorems;
@@ -16,14 +16,12 @@ The canonical corpus contains **111 theorem declarations**:
 - **6** nontrivial union-transition theorems over explicit pre/post states;
 - **13** Weaver recovery/replacement theorems;
 - **8** typed Evidence × Authority foundation theorems;
-- **18** Evidence × Authority ↔ LatticeCore integration, promotion, cap, and demotion theorems.
+- **18** Evidence × Authority ↔ LatticeCore integration, promotion, cap, and demotion theorems;
+- **13** AO-HISTORY-v1 append-only, ancestry, admission, and rejection-invariance theorems.
 
 The root project is pinned to **Lean 4.22.0**.
 
-v0.2+ requires **8/8 targeted semantic mutations** to fail Lean:
-identity rewrite, unconsumed recovery, fabricated PASS, same-ID replacement,
-missing resolution basis, evidence-driven authority growth, governed-promotion
-cap bypass, and removal of the separate authority-grant requirement.
+v0.3 requires **11/11 targeted semantic mutations** to fail Lean. The three history controls remove ancestry linkage, prepend/reorder instead of append, and mutate the protected head on rejection.
 
 ## What “proved” means here
 
