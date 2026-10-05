@@ -19,6 +19,7 @@ boundary-Lipschitz hypotheses are not decorative.
 namespace SelfModelTrack
 
 open Filter
+open scoped Topology
 
 noncomputable section
 
@@ -195,5 +196,7 @@ theorem inverse_boundary_drift_grows :
     Function.iterate_succ_apply, Real.dist_eq]
 
 end Counterexamples
+
+end
 
 end SelfModelTrack
