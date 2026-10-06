@@ -1,0 +1,77 @@
+name: EFMW catalog_count theorem audit
+
+on:
+  push:
+    branches:
+      - audit/efmw-catalog-count-58f743b
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  catalog-theorem-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned source and stage module paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone https://github.com/enuminous/Monlithic_EFMW_102_Lean4.git source
+          cd source
+          git checkout --detach 58f743bd44929049928d0b1d8beee9403c549a0d
+          test "$(git rev-parse HEAD)" = "58f743bd44929049928d0b1d8beee9403c549a0d"
+          mkdir -p ../receipts Monolithic102
+          sha256sum Schema.lean Catalog.lean lean-toolchain lakefile.lean > ../receipts/ORIGINAL_SOURCE_SHA256.txt
+          cp Schema.lean Catalog.lean Monolithic102/
+          echo "NORMALIZATION=path-only copy of exact Schema.lean and Catalog.lean bytes into Monolithic102/" > ../receipts/NORMALIZATION.txt
+      - name: Install Lean 4.19.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Compile Catalog and audit catalog_count
+        shell: bash
+        run: |
+          set +e
+          export PATH="$HOME/.elan/bin:$PATH"
+          cd source
+          lean --version > ../receipts/LEAN_VERSION.txt 2>&1
+          lake --version > ../receipts/LAKE_VERSION.txt 2>&1
+          lake update > ../receipts/LAKE_UPDATE.log 2>&1
+          URC=$?
+          lake env lean Monolithic102/Catalog.lean > ../receipts/CATALOG_COMPILE.log 2>&1
+          CRC=$?
+          ARC=125
+          if [ "$CRC" -eq 0 ]; then
+            printf '%s\n' \
+              'import Monolithic102.Catalog' \
+              '#print axioms Monolithic102.catalog_count' \
+              > CatalogAxiomAudit.lean
+            lake env lean CatalogAxiomAudit.lean > ../receipts/CATALOG_AXIOM_AUDIT.log 2>&1
+            ARC=$?
+          else
+            echo "NOT_RUN: Catalog compile failed" > ../receipts/CATALOG_AXIOM_AUDIT.log
+          fi
+          printf '%s\n' "$URC" > ../receipts/LAKE_UPDATE_EXIT.txt
+          printf '%s\n' "$CRC" > ../receipts/CATALOG_COMPILE_EXIT.txt
+          printf '%s\n' "$ARC" > ../receipts/CATALOG_AXIOM_AUDIT_EXIT.txt
+          cd ..
+          sha256sum receipts/* > receipts/RECEIPT_SHA256.txt
+          exit 0
+      - name: Upload receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: efmw-catalog-count-58f743b
+          path: receipts/
+          retention-days: 30
+      - name: Enforce theorem gate
+        shell: bash
+        run: |
+          test "$(cat receipts/CATALOG_COMPILE_EXIT.txt)" = "0"
+          test "$(cat receipts/CATALOG_AXIOM_AUDIT_EXIT.txt)" = "0"
+          echo "CATALOG_COUNT_THEOREM_AUDIT_PASS_LAYOUT_NORMALIZED"
