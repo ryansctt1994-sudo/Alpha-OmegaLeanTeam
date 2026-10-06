@@ -1,0 +1,97 @@
+name: EFMW layout-normalized diagnostic
+
+on:
+  push:
+    branches:
+      - audit/efmw-lean-58f743b
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  normalized-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch exact source and normalize only module layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone https://github.com/enuminous/Monlithic_EFMW_102_Lean4.git source
+          cd source
+          git checkout --detach 58f743bd44929049928d0b1d8beee9403c549a0d
+          test "$(git rev-parse HEAD)" = "58f743bd44929049928d0b1d8beee9403c549a0d"
+          mkdir -p ../receipts
+          sha256sum lean-toolchain lakefile.lean Catalog.lean Formalized.lean All.lean > ../receipts/ORIGINAL_SOURCE_SHA256.txt
+          mkdir -p Monolithic102
+          for f in All.lean Catalog.lean Formalized.lean Schema.lean ME*.lean; do
+            cp "$f" Monolithic102/"$f"
+          done
+          printf '%s\n' 'NORMALIZATION=copy flat module files into Monolithic102/; no source text edits' > ../receipts/NORMALIZATION.txt
+          find Monolithic102 -maxdepth 1 -type f -print | sort > ../receipts/NORMALIZED_LAYOUT.txt
+
+      - name: Install Lean 4.19.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Build normalized staging copy and audit axioms
+        shell: bash
+        run: |
+          set +e
+          export PATH="$HOME/.elan/bin:$PATH"
+          cd source
+          lean --version > ../receipts/LEAN_VERSION.txt 2>&1
+          lake --version > ../receipts/LAKE_VERSION.txt 2>&1
+          lake update > ../receipts/LAKE_UPDATE.log 2>&1
+          URC=$?
+          lake build > ../receipts/LAKE_BUILD.log 2>&1
+          BRC=$?
+          ARC=125
+          if [ "$BRC" -eq 0 ]; then
+            printf '%s\n' \
+              'import Monolithic102.Catalog' \
+              'import Monolithic102.Formalized' \
+              '#print axioms Monolithic102.catalog_count' \
+              '#print axioms Monolithic102.ME043.scalar46_eq_scalar23_sq' \
+              > AxiomAudit.lean
+            lake env lean AxiomAudit.lean > ../receipts/AXIOM_AUDIT.log 2>&1
+            ARC=$?
+          else
+            echo 'NOT_RUN: normalized build failed' > ../receipts/AXIOM_AUDIT.log
+          fi
+          printf '%s\n' "$URC" > ../receipts/LAKE_UPDATE_EXIT.txt
+          printf '%s\n' "$BRC" > ../receipts/LAKE_BUILD_EXIT.txt
+          printf '%s\n' "$ARC" > ../receipts/AXIOM_AUDIT_EXIT.txt
+          cd ..
+          sha256sum receipts/* > receipts/RECEIPT_SHA256.txt
+          exit 0
+
+      - name: Upload diagnostic receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: efmw-lean-58f743b-layout-normalized
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Diagnostic verdict
+        shell: bash
+        run: |
+          BRC="$(cat receipts/LAKE_BUILD_EXIT.txt)"
+          ARC="$(cat receipts/AXIOM_AUDIT_EXIT.txt)"
+          if [ "$BRC" -ne 0 ]; then
+            echo "NORMALIZED_DIAGNOSTIC_BUILD_FAILED"
+            exit 1
+          fi
+          if [ "$ARC" -ne 0 ]; then
+            echo "NORMALIZED_DIAGNOSTIC_AXIOM_AUDIT_FAILED"
+            exit 1
+          fi
+          echo "NORMALIZED_DIAGNOSTIC_PASS_NOT_CANONICAL_BUILD"
