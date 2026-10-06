@@ -60,12 +60,12 @@ jobs:
 
           AUDIT_RC=125
           if [ "$BUILD_RC" -eq 0 ]; then
-            cat > AxiomAudit.lean <<'EOF'
-import Monolithic102.Catalog
-import Monolithic102.Formalized
-#print axioms Monolithic102.catalog_count
-#print axioms Monolithic102.ME043.scalar46_eq_scalar23_sq
-EOF
+            printf '%s\n' \
+              'import Monolithic102.Catalog' \
+              'import Monolithic102.Formalized' \
+              '#print axioms Monolithic102.catalog_count' \
+              '#print axioms Monolithic102.ME043.scalar46_eq_scalar23_sq' \
+              > AxiomAudit.lean
             lake env lean AxiomAudit.lean > ../receipts/AXIOM_AUDIT.log 2>&1
             AUDIT_RC=$?
           else
