@@ -1,0 +1,107 @@
+name: EFMW pinned Lean audit
+
+on:
+  push:
+    branches:
+      - audit/efmw-lean-58f743b
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-lean-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout audit host
+        uses: actions/checkout@v4
+
+      - name: Fetch exact EFMW source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone https://github.com/enuminous/Monlithic_EFMW_102_Lean4.git source
+          cd source
+          git checkout --detach 58f743bd44929049928d0b1d8beee9403c549a0d
+          test "$(git rev-parse HEAD)" = "58f743bd44929049928d0b1d8beee9403c549a0d"
+          mkdir -p ../receipts
+          git rev-parse HEAD | tee ../receipts/SOURCE_COMMIT.txt
+          git ls-tree -r HEAD | tee ../receipts/SOURCE_TREE.txt
+          sha256sum lean-toolchain lakefile.lean Catalog.lean Formalized.lean All.lean > ../receipts/SOURCE_SHA256.txt
+          find . -maxdepth 2 -type f -print | sort > ../receipts/SOURCE_LAYOUT.txt
+
+      - name: Install pinned Lean via elan
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Run exact project build and theorem axiom audit
+        shell: bash
+        run: |
+          set +e
+          export PATH="$HOME/.elan/bin:$PATH"
+          mkdir -p receipts
+          cd source
+          lean --version > ../receipts/LEAN_VERSION.txt 2>&1
+          echo $? > ../receipts/LEAN_VERSION_EXIT.txt
+          lake --version > ../receipts/LAKE_VERSION.txt 2>&1
+          echo $? > ../receipts/LAKE_VERSION_EXIT.txt
+
+          lake update > ../receipts/LAKE_UPDATE.log 2>&1
+          UPDATE_RC=$?
+          echo "$UPDATE_RC" > ../receipts/LAKE_UPDATE_EXIT.txt
+
+          lake build > ../receipts/LAKE_BUILD.log 2>&1
+          BUILD_RC=$?
+          echo "$BUILD_RC" > ../receipts/LAKE_BUILD_EXIT.txt
+
+          AUDIT_RC=125
+          if [ "$BUILD_RC" -eq 0 ]; then
+            cat > AxiomAudit.lean <<'EOF'
+import Monolithic102.Catalog
+import Monolithic102.Formalized
+#print axioms Monolithic102.catalog_count
+#print axioms Monolithic102.ME043.scalar46_eq_scalar23_sq
+EOF
+            lake env lean AxiomAudit.lean > ../receipts/AXIOM_AUDIT.log 2>&1
+            AUDIT_RC=$?
+          else
+            echo "NOT_RUN: lake build failed" > ../receipts/AXIOM_AUDIT.log
+          fi
+          echo "$AUDIT_RC" > ../receipts/AXIOM_AUDIT_EXIT.txt
+
+          cd ..
+          sha256sum receipts/* > receipts/RECEIPT_SHA256.txt
+
+          echo "update_rc=$UPDATE_RC"
+          echo "build_rc=$BUILD_RC"
+          echo "audit_rc=$AUDIT_RC"
+          exit 0
+
+      - name: Upload receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: efmw-lean-58f743b-receipts
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Enforce formal gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD_RC="$(cat receipts/LAKE_BUILD_EXIT.txt)"
+          AUDIT_RC="$(cat receipts/AXIOM_AUDIT_EXIT.txt)"
+          if [ "$BUILD_RC" -ne 0 ]; then
+            echo "FORMAL_GATE_BLOCKED_BUILD_FAILED"
+            exit 1
+          fi
+          if [ "$AUDIT_RC" -ne 0 ]; then
+            echo "FORMAL_GATE_BLOCKED_AXIOM_AUDIT_FAILED"
+            exit 1
+          fi
+          echo "FORMAL_GATE_PASS_PINNED_SOURCE"
