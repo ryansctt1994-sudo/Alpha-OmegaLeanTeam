@@ -1,0 +1,16 @@
+# Gate Zero ownership scaffold
+# Metadata only: enforcement requires repository branch/ruleset settings.
+* @ryansctt1994-sudo
+
+# Canonical proof and provenance surfaces
+/.github/ @ryansctt1994-sudo
+/AlphaOmega/ @ryansctt1994-sudo
+/LatticeCore/ @ryansctt1994-sudo
+/IntrospectionTwin/ @ryansctt1994-sudo
+/Audit.lean @ryansctt1994-sudo
+/PROVENANCE.md @ryansctt1994-sudo
+/HISTORY_CONTRACT_v1.md @ryansctt1994-sudo
+/V0_*.md @ryansctt1994-sudo
+/mathlib-track/ @ryansctt1994-sudo
+/self-model-track/ @ryansctt1994-sudo
+/tools/ @ryansctt1994-sudo
