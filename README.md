@@ -21,7 +21,13 @@ The canonical corpus contains **124 theorem declarations**:
 
 The root project is pinned to **Lean 4.22.0**.
 
-The root governance corpus remains at **124 theorem declarations** on Lean 4.22.0 and requires **11/11 targeted semantic mutations** to fail. v0.4 keeps a separately verified one-theorem Mathlib track with **2/2 isolated mutations killed**. v0.5 adds a third, separate self-model research boundary with **9 theorem declarations** and **2/2 research mutations killed**.
+The root governance corpus remains at **124 theorem declarations** on Lean 4.22.0. The original 11/11 targeted mutations were reported killed before AO-MUT-001; the current review branch adds a twelfth gate-soundness mutant and upgrades the oracle. **Do not claim 12/12 until the pinned CI rerun and its witness ledger are inspected.** v0.4 keeps a separately verified one-theorem Mathlib track with **2/2 isolated mutations killed**. v0.5 adds a third, separate self-model research boundary with **9 theorem declarations** and **2/2 research mutations killed**.
+
+## AO-MUT-001 mutation-oracle boundary
+
+Mutation failure alone is insufficient evidence. The oracle compiles the unmodified source through the **identical isolated Lean command and file path** before any mutation can count, aborts on any red baseline, and requires a Lean diagnostic localized to a named theorem for each counted kill. It preserves stdout, stderr, source hashes and theorem-line witnesses in a CI artifact. The newly added IntrospectionTwin mutation deletes the gate's `kernelAccepted` condition and tests `evaluateGate_sound`; it does **not** establish that the runtime witness reader or an external decision process refines this Lean model.
+
+The root project's `lakefile.toml` declares no Mathlib dependency. Its 124 root theorems cannot import Mathlib via the declared project dependencies; the Mathlib-backed tracks are separately pinned and checked.
 
 ## Isolated Mathlib track
 
