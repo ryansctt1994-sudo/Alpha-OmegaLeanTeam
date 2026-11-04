@@ -104,6 +104,20 @@ jobs:
           print(f"axiom audit PASS: {sorted(used)}")
           PY
 
+      - name: Reader-refinement adversarial experiment (fresh Lean replay)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/reader_refinement_experiment.py
+
+      - name: Preserve reader-refinement evidence (even on failure)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ao-rr-001-reader-refinement
+          path: reader-refinement-evidence/
+          if-no-files-found: warn
+
       - name: Preserve mutation witness ledger (even on failure)
         if: always()
         uses: actions/upload-artifact@v4
