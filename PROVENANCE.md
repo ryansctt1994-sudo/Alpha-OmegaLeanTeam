@@ -26,6 +26,8 @@ These files contain 31 theorem declarations. The intentionally poisoned
 files are not part of the canonical library import. Their adversarial findings
 remain source-project validation evidence, not production theorem modules.
 
+The consolidated root corpus uses Lean 4.22.0 without a declared Mathlib dependency. The 124 root theorems therefore do not use Mathlib in this pinned project; Mathlib-backed work is isolated in its own toolchain and dependency boundary.
+
 The source repository reports a Lean 4.22.0 clean build and no `sorry` in the
 library. At consolidation time GitHub exposed no workflow runs directly bound
 to commit `fcc63c0`, so this repository's own clean CI is the qualification

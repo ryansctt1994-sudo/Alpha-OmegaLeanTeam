@@ -68,7 +68,13 @@ jobs:
             exit 1
           fi
 
-      - name: Kill v0.2 semantic mutations
+      - name: Test mutation oracle positive and negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_mutation_oracle.py' -v
+
+      - name: Fail-closed semantic mutation oracle
         shell: bash
         run: |
           set -euo pipefail
@@ -97,3 +103,11 @@ jobs:
 
           print(f"axiom audit PASS: {sorted(used)}")
           PY
+
+      - name: Preserve mutation witness ledger (even on failure)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ao-mutation-witness-ledger
+          path: mutation-witness-ledger.json
+          if-no-files-found: warn
