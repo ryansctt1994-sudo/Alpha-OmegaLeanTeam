@@ -39,6 +39,33 @@ jobs:
 
           theorem_re = re.compile(r"^\s*theorem\s+[A-Za-z0-9_'.]+", re.M)
           forbidden_re = re.compile(r"^\s*(axiom|sorry|admit)(?:\s|$)", re.M)
+          # Also reject axioms behind attributes/modifiers (e.g. `private axiom`) and
+          # `sorry`/`admit` used as a term or tactic anywhere outside comments/strings.
+          modified_axiom_re = re.compile(
+              r"^\s*(?:@\[[^\]]*\]\s*)*(?:(?:private|protected|noncomputable|unsafe|partial|nonrec)\s+)+axiom\b",
+              re.M,
+          )
+          sorry_token_re = re.compile(r"(?<![A-Za-z0-9_'.])(sorry|admit)(?![A-Za-z0-9_'!?])")
+          admit_def_re = re.compile(r"\b(?:def|theorem|abbrev|structure|inductive)\s+admit\b|`[^`]*`|\.admit\b")
+
+          def strip_comments_and_strings(text):
+              out, i, depth, n = [], 0, 0, len(text)
+              while i < n:
+                  if text.startswith("/-", i):
+                      depth += 1; i += 2; continue
+                  if depth and text.startswith("-/", i):
+                      depth -= 1; i += 2; continue
+                  if depth:
+                      out.append("\n" if text[i] == "\n" else " "); i += 1; continue
+                  if text.startswith("--", i):
+                      j = text.find("\n", i); i = n if j < 0 else j; continue
+                  if text[i] == '"':
+                      j = i + 1
+                      while j < n and text[j] != '"':
+                          j += 2 if text[j] == "\\" else 1
+                      out.append('""'); i = j + 1; continue
+                  out.append(text[i]); i += 1
+              return "".join(out)
 
           theorem_count = 0
           for path in files:
@@ -47,6 +74,12 @@ jobs:
               bad = forbidden_re.search(text)
               if bad:
                   raise SystemExit(f"forbidden proof declaration in {path}: {bad.group(1)}")
+              code = strip_comments_and_strings(text)
+              if modified_axiom_re.search(code):
+                  raise SystemExit(f"forbidden proof declaration in {path}: modified axiom")
+              for line in code.splitlines():
+                  if sorry_token_re.search(admit_def_re.sub(" ", line)):
+                      raise SystemExit(f"forbidden proof term in {path}: {line.strip()}")
 
           if theorem_count != 124:
               raise SystemExit(f"expected 124 theorem declarations, found {theorem_count}")
